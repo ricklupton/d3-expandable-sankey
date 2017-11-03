@@ -8,6 +8,6 @@ tape("expandableSankeyDiagram() can be called", function(test) {
   var dom = new jsdom.JSDOM();
   global.document = dom.window.document;
   var svg = select('body').append('svg').datum({nodes: [], links: []});
-  test.equal(diagram.expandableSankeyDiagram(svg), undefined);
+  test.equal(diagram.expandableSankeyDiagram()(svg), undefined);
   test.end();
 });
