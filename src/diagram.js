@@ -165,7 +165,9 @@ export default function expandableSankey() {
             .call(snode);
 
         nodeEnter.select('text')
-          .attr('class', 'nodeTitle');
+          .attr('class', 'nodeTitle')
+          .attr('transform', function(d) {
+            return expanded[d.id] || d.dy < 10 ? 'translate(-4,-8)' : 'translate(4,' + (d.dy / 2) + ')'; });
 
         nodeEnter.insert('g', ':first-child').classed('subdivisions', true);
 
@@ -178,6 +180,12 @@ export default function expandableSankey() {
         node = node.merge(nodeEnter);
         node.call(snode);
         if (!skipSubs) updateSubs(node);
+
+        node.select('text.nodeTitle')
+          .transition()
+          .attr('transform', function(d) {
+            return expanded[d.id] ? 'translate(-4,-8)' : 'translate(4,' + (d.dy / 2) + ')'; })
+          .style('fill', function(d) { return expanded[d.id] ? '#333' : '#000'; });
       }
 
       function expandOrCollapseNode(d) {
@@ -262,12 +270,6 @@ export default function expandableSankey() {
 
         subs.select('title')
           .text(function(d) { return d.label; });
-
-        node.select('text.nodeTitle')
-          .transition()
-          .attr('transform', function(d) {
-            return expanded[d.id] ? 'translate(-4,-8)' : 'translate(4,' + (d.dy / 2) + ')'; })
-          .style('fill', function(d) { return expanded[d.id] ? '#333' : '#000'; });
       }
 
       function interpolateLink (b) {
