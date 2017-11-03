@@ -11,8 +11,16 @@ release](https://github.com/ricklupton/d3-expandable-sankey/releases/latest).
 
 ## API Reference
 
-YOUR API DOCUMENTATION HERE. Use bold for symbols (such as constructor and method names) and italics for instances. See the other D3 modules for examples.
+<a href="#scale" name="scale">#</a> diagram.<b>scale</b>[(<i>scale</i>])
 
-<a href="#foo" name="foo">#</a> <b>foo</b>()
+See
+[d3.sankeyDiagram#scale](https://github.com/ricklupton/d3-sankey-diagram/#layout-scale).
 
-Computes the answer to the ultimate question of life, the universe, and everything.
+<a name="on" href="#on">#</a> diagram.<b>on</b>(<i>type</i>[, <i>listener</i>])
+
+Adds or removes an event *listener* for the specified *type*. The only supported
+*type* string is `"clickNode"`. The *listener* is invoked with the context as
+the element and one argument, the corresponding data.
+
+If *listener* is not specified, returns the currently-assigned listener for the
+specified *type*, if any. 
