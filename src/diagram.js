@@ -3,7 +3,11 @@ import { interpolate } from 'd3-interpolate';
 import { format } from 'd3-format';
 import { timeout } from 'd3-timer';
 import { dispatch } from 'd3-dispatch';
-import { sankey, sankeyLink, sankeyNode } from 'd3-sankey-diagram';
+import { color } from 'd3-color';
+import 'd3-transition';
+// import { sankey, sankeyLink, sankeyNode } from 'd3-sankey-diagram';
+import { sankey, sankeyLink } from 'd3-sankey-diagram';
+import sankeyNode from './node.js';
 import { linksAccessor } from './data';
 
 var numberFormat0 = format('.1f');
@@ -115,6 +119,10 @@ export default function expandableSankey() {
         return expanded[d.id] && d.subdivisions.length ? d.subdivisions : def;
       }
 
+      function titleTransform (d) {
+        return expanded[d.id] || d.dy < 10 ? 'translate(-4,-8)' : 'translate(4,' + (d.dy / 2) + ')';
+      }
+
       function renderLinks(links) {
         var link = svg.select('.links')
             .selectAll('g')
@@ -164,10 +172,9 @@ export default function expandableSankey() {
             .attr('class', 'node')
             .call(snode);
 
-        nodeEnter.select('text')
-          .attr('class', 'nodeTitle')
-          .attr('transform', function(d) {
-            return expanded[d.id] || d.dy < 10 ? 'translate(-4,-8)' : 'translate(4,' + (d.dy / 2) + ')'; });
+        // Reposition node titles.
+        nodeEnter.select('text.node-title')
+          .attr('transform', titleTransform);
 
         nodeEnter.insert('g', ':first-child').classed('subdivisions', true);
 
@@ -181,10 +188,9 @@ export default function expandableSankey() {
         node.call(snode);
         if (!skipSubs) updateSubs(node);
 
-        node.select('text.nodeTitle')
+        node.select('text.node-title')
           .transition()
-          .attr('transform', function(d) {
-            return expanded[d.id] ? 'translate(-4,-8)' : 'translate(4,' + (d.dy / 2) + ')'; })
+          .attr('transform', titleTransform)
           .style('fill', function(d) { return expanded[d.id] ? '#333' : '#000'; });
       }
 
@@ -247,8 +253,10 @@ export default function expandableSankey() {
           renderLinks(graph.links);
         });
 
+        // spread by 0.5px each side to avoid gaps
         subsEnter.append('rect')
-          .attr('width', 60);
+          .attr('x', -0.5)
+          .attr('width', 61);
 
         subsEnter.append('text')
           .attr('dy', '0.35em');
