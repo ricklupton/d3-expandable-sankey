@@ -7,33 +7,40 @@
     "d3-module"
   ],
   "license": "BSD-3-Clause",
-  "main": "build/d3-expandable-sankey.js",
-  "jsnext:main": "index",
+  "main": "build/d3-expandable-sankey.cjs.js",
+  "module": "build/d3-expandable-sankey.esm.js",
+  "browser": "build/d3-expandable-sankey.umd.js",
   "homepage": "https://github.com/ricklupton/d3-expandable-sankey",
   "repository": {
     "type": "git",
     "url": "https://github.com/ricklupton/d3-expandable-sankey.git"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup -g d3-color:d3,d3-dispatch:d3,d3-collection:d3,d3-format:d3,d3-interpolate:d3,d3-sankey-diagram:d3,d3-timer:d3,d3-selection:d3,d3-expandable-sankey:d3 -f umd -n d3 -o build/d3-expandable-sankey.js -- index.js",
+    "build": "rm -rf build && mkdir build && rollup -c",
+    "pretest": "npm run build",
     "test": "tape 'test/**/*-test.js'",
     "prepublish": "npm run test && uglifyjs build/d3-expandable-sankey.js -c -m -o build/d3-expandable-sankey.min.js",
     "postpublish": "zip -j build/d3-expandable-sankey.zip -- LICENSE README.md build/d3-expandable-sankey.js build/d3-expandable-sankey.min.js"
   },
   "devDependencies": {
     "d3-selection": "^1.1.0",
-    "jsdom": "^11.3.0",
-    "rollup": "0.27",
+    "jsdom": "^13.0.0",
+    "rollup": "0.46",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "tape": "4",
     "uglify-js": "2"
   },
   "dependencies": {
+    "d3-array": "^2.0.2",
     "d3-collection": "^1.0.4",
     "d3-color": "^1.0.3",
     "d3-dispatch": "^1.0.3",
     "d3-format": "^1.2.0",
     "d3-interpolate": "^1.1.5",
-    "d3-sankey-diagram": "^0.5.0",
-    "d3-timer": "^1.0.7"
+    "d3-sankey-diagram": "^0.7.1",
+    "d3-timer": "^1.0.7",
+    "d3-transition": "^1.1.3"
   }
 }

@@ -105,7 +105,7 @@ export default function expandableSankey() {
       }
 
       function subColor(node, index) {
-        var c = d3.color(node.color || 'grey');
+        var c = color(node.color || 'grey');
         var k = 0.3;
         return '' + (((index % 2) === 1) ? c.brighter(k) : c.darker(k));
       }

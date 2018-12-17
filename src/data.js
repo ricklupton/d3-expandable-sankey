@@ -1,4 +1,5 @@
-import { nest, sum } from 'd3-collection';
+import { nest } from 'd3-collection';
+import { sum } from 'd3-array';
 import { color } from 'd3-color';
 
 function linkId(expanded) {
