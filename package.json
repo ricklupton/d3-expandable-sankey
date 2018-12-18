@@ -18,6 +18,7 @@
   "scripts": {
     "build": "rm -rf build && mkdir build && rollup -c",
     "pretest": "npm run build",
+    "prepare": "npm run build",
     "test": "tape 'test/**/*-test.js'",
     "prepublish": "npm run test && uglifyjs build/d3-expandable-sankey.js -c -m -o build/d3-expandable-sankey.min.js",
     "postpublish": "zip -j build/d3-expandable-sankey.zip -- LICENSE README.md build/d3-expandable-sankey.js build/d3-expandable-sankey.min.js"
