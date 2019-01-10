@@ -4,6 +4,7 @@ import { format } from 'd3-format';
 import { timeout } from 'd3-timer';
 import { dispatch } from 'd3-dispatch';
 import { color } from 'd3-color';
+import { map } from 'd3-collection';
 import 'd3-transition';
 // import { sankey, sankeyLink, sankeyNode } from 'd3-sankey-diagram';
 import { sankey, sankeyLink } from 'd3-sankey-diagram';
@@ -33,6 +34,7 @@ export default function expandableSankey() {
       // Select the svg element, and add groups if first time
       var svg = select(this);
       if (svg.selectAll('.links').empty()) {
+        svg.append('g').attr('class', 'groups');
         svg.append('g').attr('class', 'links');
         svg.append('g').attr('class', 'nodes');
       }
@@ -56,6 +58,11 @@ export default function expandableSankey() {
             return expanded[d.id] ? t.replace('\n', ' ') : t;
           });
 
+      // Prepare groups of nodes
+      graph = layout(data);
+      const nodeMap = map(graph.nodes, n => n.id);
+      const groupsPositioned = (data.groups || []).map(g => positionGroup(nodeMap, g));
+
       // Track whether anything is being hovered
       var hover = false;
 
@@ -69,6 +76,7 @@ export default function expandableSankey() {
         graph = layout(data);
         renderLinks(graph.links);
         renderNodes(graph.nodes, skipSubs);
+        updateGroups(groupsPositioned);
       }
 
       function targetSub(link) {
@@ -293,6 +301,38 @@ export default function expandableSankey() {
           return linkPath(that._current);
         };
       }
+
+      function updateGroups(groups) {
+        let group = svg.select('.groups').selectAll('.group')
+            .data(groups);
+
+        // EXIT
+        group.exit().remove();
+
+        // ENTER
+        const enter = group.enter().append('g')
+              .attr('class', 'group');
+        // .on('click', selectGroup);
+
+        enter.append('rect');
+        enter.append('text')
+          .attr('x', 0)
+          .attr('y', -15);
+
+        group = group.merge(enter);
+
+        group
+          .style('display', d => d.title ? 'inline' : 'none')
+          .attr('transform', d => `translate(${d.rect.left},${d.rect.top})`)
+          .select('rect')
+          .attr('x', -10)
+          .attr('y', -10)
+          .attr('width', d => d.rect.right - d.rect.left + 20)
+          .attr('height', d => d.rect.bottom - d.rect.top + 20);
+
+        group.select('text')
+          .text(d => d.title);
+      }
     });
   }
 
@@ -330,4 +370,25 @@ function prepareNodes (data, scale) {
       d.subdiv[sub.id] = d.subdiv['in-' + sub.id] = d.subdiv['out-' + sub.id] = sub;
     });
   });
+}
+
+function positionGroup (nodes, group) {
+  const rect = {
+    top: Number.MAX_VALUE,
+    left: Number.MAX_VALUE,
+    bottom: 0,
+    right: 0
+  };
+
+  group.nodes.forEach(n => {
+    const node = nodes.get(n);
+    if (!node) return;
+    if (node.x0 < rect.left) rect.left = node.x0;
+    if (node.x1 > rect.right) rect.right = node.x1;
+    if (node.y0 < rect.top) rect.top = node.y0;
+    if (node.y1 > rect.bottom) rect.bottom = node.y1;
+  });
+
+  group.rect = rect;
+  return group;
 }
