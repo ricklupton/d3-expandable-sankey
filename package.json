@@ -20,8 +20,8 @@
     "pretest": "npm run build",
     "prepare": "npm run build",
     "test": "tape 'test/**/*-test.js'",
-    "prepublish": "npm run test && uglifyjs build/d3-expandable-sankey.js -c -m -o build/d3-expandable-sankey.min.js",
-    "postpublish": "zip -j build/d3-expandable-sankey.zip -- LICENSE README.md build/d3-expandable-sankey.js build/d3-expandable-sankey.min.js"
+    "prepublish": "npm run test && uglifyjs build/d3-expandable-sankey.umd.js -c -m -o build/d3-expandable-sankey.min.js",
+    "postpublish": "zip -j build/d3-expandable-sankey.zip -- LICENSE README.md build/d3-expandable-sankey.cjs.js build/d3-expandable-sankey.esm.js build/d3-expandable-sankey.umd.js build/d3-expandable-sankey.min.js"
   },
   "devDependencies": {
     "d3-selection": "^1.1.0",
@@ -40,7 +40,7 @@
     "d3-dispatch": "^1.0.3",
     "d3-format": "^1.2.0",
     "d3-interpolate": "^1.1.5",
-    "d3-sankey-diagram": "^0.7.1",
+    "d3-sankey-diagram": "^0.7.3",
     "d3-timer": "^1.0.7",
     "d3-transition": "^1.1.3"
   }

@@ -152,7 +152,12 @@ export default function expandableSankey() {
         // ENTER
         var linkEnter = link.enter()
             .append('g')
-            .attr('class', 'link');
+            .attr('class', 'link')
+            .each(function (d) {
+              this.dataset.linkId = d.id;
+              this.dataset.source = d.source.id;
+              this.dataset.target = d.target.id;
+            });
 
         linkEnter.append('path')
           .each(function (d) { this._current = d; })
@@ -178,6 +183,9 @@ export default function expandableSankey() {
         var nodeEnter = node.enter()
             .append('g')
             .attr('class', 'node')
+            .each(function (d) {
+              this.dataset.nodeId = d.id;
+            })
             .call(snode);
 
         // Reposition node titles.
@@ -207,7 +215,7 @@ export default function expandableSankey() {
           hoverEnabled = false;
           expanded[d.id] = 'temp';
           relayoutAndRender(true);
-          expanded[d.id] = true;
+          expanded[d.id] = d.expanded = true;
           relayoutAndRender();
           timeout(function() {
             hoverEnabled = true;
@@ -218,7 +226,7 @@ export default function expandableSankey() {
           d.hover = true;
           relayoutAndRender();
           timeout(function() {
-            expanded[d.id] = false;
+            expanded[d.id] = d.expanded = false;
             relayoutAndRender();
             d.hover = false;
             hoverEnabled = true;
@@ -311,7 +319,10 @@ export default function expandableSankey() {
 
         // ENTER
         const enter = group.enter().append('g')
-              .attr('class', 'group');
+              .attr('class', 'group')
+              .each(function (d) {
+                this.dataset.groupTitle = d.title;
+              });
         // .on('click', selectGroup);
 
         enter.append('rect');
